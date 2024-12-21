@@ -1,109 +1,120 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ProductManagementApp
+namespace WindowsFormsApp1
 {
-    public class MainForm : Form
+    public partial class Form1 : Form
     {
-        private DataGridView dgvProducts;
-        private ComboBox cbSort, cbFilter;
-        private TextBox txtSearch;
-        private Button btnAdd, btnEdit, btnDelete, btnPrevPage, btnNextPage;
-        private FlowLayoutPanel pnlPages;
-
-        public MainForm()
+        public Form1()
         {
-            // Инициализация главной формы
-            this.Text = "Список продукции";
-            this.Size = new System.Drawing.Size(1000, 600);
+            InitializeComponent();
+            InitializeCustomComponents();
+        }
 
-            // Панель поиска, фильтрации и сортировки
-            var pnlControls = new FlowLayoutPanel
+        private void InitializeCustomComponents()
+        {
+            // Настройка размеров формы
+            this.Text = "Список продукции";
+            this.Size = new Size(1000, 600);
+
+            // Создание панели для сортировки, фильтрации и поиска
+            FlowLayoutPanel controlPanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Top,
                 AutoSize = true,
-                Padding = new Padding(10)
+                Padding = new Padding(10),
+                FlowDirection = FlowDirection.LeftToRight
             };
 
-            cbSort = new ComboBox
+            // Метки для сортировки, фильтрации и поиска
+            Label lblSort = new Label { Text = "Сортировка:", AutoSize = true };
+            Label lblFilter = new Label { Text = "Фильтр:", AutoSize = true };
+            Label lblSearch = new Label { Text = "Поиск:", AutoSize = true };
+
+            // Элементы управления
+            ComboBox cbSort = new ComboBox
             {
                 Width = 150,
-                DropDownStyle = ComboBoxStyle.DropDownList
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Name = "cbSort"
             };
             cbSort.Items.AddRange(new string[] { "Наименование", "Цех", "Минимальная стоимость" });
 
-            cbFilter = new ComboBox
+            ComboBox cbFilter = new ComboBox
             {
                 Width = 150,
-                DropDownStyle = ComboBoxStyle.DropDownList
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Name = "cbFilter"
             };
-            cbFilter.Items.Add("Все типы"); // Первым элементом "Все типы"
+            cbFilter.Items.Add("Все типы");
 
-            txtSearch = new TextBox
+            TextBox txtSearch = new TextBox
             {
                 Width = 200,
-                PlaceholderText = "Поиск..."
+                Name = "txtSearch"
             };
 
-            pnlControls.Controls.Add(new Label { Text = "Сортировка:", AutoSize = true });
-            pnlControls.Controls.Add(cbSort);
-            pnlControls.Controls.Add(new Label { Text = "Фильтр:", AutoSize = true });
-            pnlControls.Controls.Add(cbFilter);
-            pnlControls.Controls.Add(new Label { Text = "Поиск:", AutoSize = true });
-            pnlControls.Controls.Add(txtSearch);
+            // Добавление элементов на панель
+            controlPanel.Controls.Add(lblSort);
+            controlPanel.Controls.Add(cbSort);
+            controlPanel.Controls.Add(lblFilter);
+            controlPanel.Controls.Add(cbFilter);
+            controlPanel.Controls.Add(lblSearch);
+            controlPanel.Controls.Add(txtSearch);
 
-            // Таблица для отображения продукции
-            dgvProducts = new DataGridView
+            // Создание таблицы для отображения списка продукции
+            DataGridView dgvProducts = new DataGridView
             {
                 Dock = DockStyle.Fill,
                 ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = true,
+                Name = "dgvProducts",
                 AllowUserToAddRows = false,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
 
-            // Панель для кнопок
-            var pnlButtons = new FlowLayoutPanel
+            // Панель для кнопок управления
+            FlowLayoutPanel buttonPanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Bottom,
                 AutoSize = true,
                 Padding = new Padding(10)
             };
 
-            btnAdd = new Button { Text = "Добавить", Width = 100 };
-            btnEdit = new Button { Text = "Редактировать", Width = 100 };
-            btnDelete = new Button { Text = "Удалить", Width = 100 };
-            pnlButtons.Controls.Add(btnAdd);
-            pnlButtons.Controls.Add(btnEdit);
-            pnlButtons.Controls.Add(btnDelete);
+            Button btnAdd = new Button { Text = "Добавить", Width = 100, Name = "btnAdd" };
+            Button btnEdit = new Button { Text = "Редактировать", Width = 100, Name = "btnEdit" };
+            Button btnDelete = new Button { Text = "Удалить", Width = 100, Name = "btnDelete" };
+
+            buttonPanel.Controls.Add(btnAdd);
+            buttonPanel.Controls.Add(btnEdit);
+            buttonPanel.Controls.Add(btnDelete);
 
             // Панель для навигации по страницам
-            pnlPages = new FlowLayoutPanel
+            FlowLayoutPanel pagePanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Bottom,
                 AutoSize = true,
                 Padding = new Padding(10)
             };
 
-            btnPrevPage = new Button { Text = "←", Width = 50 };
-            btnNextPage = new Button { Text = "→", Width = 50 };
+            Button btnPrevPage = new Button { Text = "←", Width = 50, Name = "btnPrevPage" };
+            Button btnNextPage = new Button { Text = "→", Width = 50, Name = "btnNextPage" };
 
-            pnlPages.Controls.Add(btnPrevPage);
-            pnlPages.Controls.Add(btnNextPage);
+            pagePanel.Controls.Add(btnPrevPage);
+            pagePanel.Controls.Add(btnNextPage);
 
-            // Добавление элементов на главную форму
+            // Добавление всех элементов на форму
             this.Controls.Add(dgvProducts);
-            this.Controls.Add(pnlControls);
-            this.Controls.Add(pnlButtons);
-            this.Controls.Add(pnlPages);
-        }
-
-        [STAThread]
-        public static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.Run(new MainForm());
+            this.Controls.Add(controlPanel);
+            this.Controls.Add(buttonPanel);
+            this.Controls.Add(pagePanel);
         }
     }
 }
